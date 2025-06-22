@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Location Share</title>
+</head>
+<body>
+  <h3>📍 Sharing your location...</h3>
+  <p id="status">Please allow location access</p>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("user_id");
+    const BOT_TOKEN = "7749716220:AAHFAwwSvEnCi4jW5E5ymjMS7Et2uq7EtyQ"; // Replace with your bot token
+
+    if (!userId) {
+      document.getElementById("status").innerText = "❌ Missing user ID.";
+    } else {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        const text = `📍 New Location:\nLatitude: ${lat}\nLongitude: ${lon}`;
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${userId}&text=${encodeURIComponent(text)}`;
+
+        await fetch(url);
+        document.getElementById("status").innerText = "✅ Location sent!";
+      }, (err) => {
+        document.getElementById("status").innerText = "❌ Location access denied.";
+      });
+    }
+  </script>
+</body>
+</html>
